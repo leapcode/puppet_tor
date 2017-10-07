@@ -2,6 +2,7 @@
 define tor::daemon::hidden_service(
   $ports         = [],
   $single_hop    = false,
+  $v3            = false,
   $data_dir      = $tor::daemon::data_dir,
   $ensure        = present ) {
 
@@ -18,8 +19,5 @@ define tor::daemon::hidden_service(
     order   => 05,
     target  => $tor::daemon::config_file,
   }
-
-  
-
 }
 
