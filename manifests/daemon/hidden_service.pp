@@ -3,8 +3,8 @@ define tor::daemon::hidden_service(
   $ports         = [],
   $single_hop    = false,
   $v3            = false,
-  $data_dir      = $tor::daemon::data_dir,
-  $ensure        = present ) {
+  $data_dir      = $tor::daemon::data_dir ) {
+
 
 
   if $single_hop {
@@ -14,10 +14,8 @@ define tor::daemon::hidden_service(
   }
 
   concat::fragment { "05.hidden_service.${name}":
-    ensure  => $ensure,
     content => template('tor/torrc.hidden_service.erb'),
     order   => 05,
     target  => $tor::daemon::config_file,
   }
 }
-
