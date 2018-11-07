@@ -1,5 +1,6 @@
 # relay definition
 define tor::daemon::relay(
+  $ensure                  = 'present',
   $port                    = 0,
   $outbound_bindaddresses  = [],
   $portforwarding          = 0,
@@ -13,25 +14,27 @@ define tor::daemon::relay(
   $relay_bandwidth_burst   = 0,
   # GB, 0 for no limit
   $accounting_max          = 0,
-  $accounting_start        = "month 1 0:00",
+  $accounting_start        = 'month 1 0:00',
   $contact_info            = '',
   # TODO: autofill with other relays
   $my_family               = '',
   $address                 = "tor.${::domain}",
   $bridge_relay            = 0,
-  $ensure                  = present ) {
+) {
 
-  $nickname = $name
+  if $ensure == 'present' {
+    $nickname = $name
 
-  if $outbound_bindaddresses == [] {
-    $real_outbound_bindaddresses = []
-  } else {
-    $real_outbound_bindaddresses = $outbound_bindaddresses
-  }
+    if $outbound_bindaddresses == [] {
+      $real_outbound_bindaddresses = []
+    } else {
+      $real_outbound_bindaddresses = $outbound_bindaddresses
+    }
 
-  concat::fragment { '03.relay':
-    content => template('tor/torrc.relay.erb'),
-    order   => 03,
-    target  => $tor::daemon::config_file,
+    concat::fragment { '03.relay':
+      content => template('tor/torrc.relay.erb'),
+      order   => '03',
+      target  => $tor::daemon::config_file,
+    }
   }
 }
